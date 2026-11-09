@@ -1,102 +1,172 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using MA.Serialization.Serialization;
 
 namespace MA.Serialization
 {
-    [CreateAssetMenu(fileName = "SerializerJSON", menuName = "Toolbox/Serializer/JSON")]
-    public class SerializerJSON : ScriptableObject, ISerializer
+    [CreateAssetMenu(fileName = "SerializerJSON", menuName = "Toolbox/Serialization/Serializer/JSON")]
+    public class SerializerJSON : SerializerBase
     {
         private const string FileExtension = ".json";
         private const string FilePattern = "*.json";
 
-        public bool FileExists(string folderPath, string fileName)
-        {
-            string path = CombineFilePath(folderPath, fileName);
-            bool exists = File.Exists(path);
+        [SerializeField] private SerializationExceptionHandlerBase exceptionHandler;
 
-            return exists;
-        }
-
-        public void DeleteFile(string folderPath, string fileName)
+        public override ESerializationOperationResult DeleteFile(string folderPath, string fileName)
         {
             string path = CombineFilePath(folderPath, fileName);
 
-            if (File.Exists(path))
-                File.Delete(path);
+            try
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+
+                    return ESerializationOperationResult.Success;
+                }
+
+                return ESerializationOperationResult.Failure | ESerializationOperationResult.FileNotFound;
+            }
+            catch (Exception ex)
+            {
+                return exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure | ESerializationOperationResult.Unknown;
+            }
         }
 
-        public void SerializeDataToFile<DataT>(string folderPath, string fileName, DataT data)
+        public override ESerializationOperationResult SerializeDataToFile<DataT>(string folderPath, string fileName, DataT data)
         {
             string path = CombineFilePath(folderPath, fileName);
-            string toJson = JsonUtility.ToJson(data);
 
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
+            try
+            {
+                string toJson = JsonUtility.ToJson(data);
 
-            File.WriteAllText(path, toJson);
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                File.WriteAllText(path, toJson);
+
+                return ESerializationOperationResult.Success;
+            }
+            catch (Exception ex)
+            {
+                return exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure | ESerializationOperationResult.Unknown;
+            }
         }
 
-        public async Awaitable SerializeDataToFileAsync<DataT>(string folderPath, string fileName, DataT data)
+        public override async Awaitable<ESerializationOperationResult> SerializeDataToFileAsync<DataT>(string folderPath, string fileName, DataT data)
         {
             string path = CombineFilePath(folderPath, fileName);
-            string toJson = JsonUtility.ToJson(data);
 
-            if (!Directory.Exists(folderPath))
-                Directory.CreateDirectory(folderPath);
+            try
+            {
+                string toJson = JsonUtility.ToJson(data);
 
-            await File.WriteAllTextAsync(path, toJson);
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
 
-            await Awaitable.MainThreadAsync();
+                await File.WriteAllTextAsync(path, toJson);
+
+                await Awaitable.MainThreadAsync();
+
+                return ESerializationOperationResult.Success;
+            }
+            catch (Exception ex)
+            {
+                await Awaitable.MainThreadAsync();
+
+                return exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure | ESerializationOperationResult.Unknown;
+            }
         }
 
-        public DataT DeserializeDataFromFile<DataT>(string folderPath, string fileName)
+        public override (DataT data, ESerializationOperationResult result) DeserializeDataFromFile<DataT>(string folderPath, string fileName)
         {
             string path = CombineFilePath(folderPath, fileName);
-            string json = File.ReadAllText(path);
-            DataT data = JsonUtility.FromJson<DataT>(json);
 
-            return data;
+            try
+            {
+                if (!File.Exists(path))
+                    return (default, ESerializationOperationResult.Failure | ESerializationOperationResult.FileNotFound);
+
+                string json = File.ReadAllText(path);
+                DataT data = JsonUtility.FromJson<DataT>(json);
+
+                return (data, ESerializationOperationResult.Success);
+            }
+            catch (Exception ex)
+            {
+                ESerializationOperationResult result = exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure;
+
+                return (default, result);
+            }
         }
 
-        public async Awaitable<DataT> DeserializeDataFromFileAsync<DataT>(string folderPath, string fileName)
+        public override async Awaitable<(DataT data, ESerializationOperationResult result)> DeserializeDataFromFileAsync<DataT>(string folderPath, string fileName)
         {
             string path = CombineFilePath(folderPath, fileName);
-            string json = await File.ReadAllTextAsync(path);
 
-            await Awaitable.MainThreadAsync();
+            try
+            {
+                if (!File.Exists(path))
+                    return (default, ESerializationOperationResult.Failure | ESerializationOperationResult.FileNotFound);
 
-            DataT data = JsonUtility.FromJson<DataT>(json);
+                string json = await File.ReadAllTextAsync(path);
 
-            return data;
+                await Awaitable.MainThreadAsync();
+
+                DataT data = JsonUtility.FromJson<DataT>(json);
+
+                return (data, ESerializationOperationResult.Success);
+            }
+            catch (Exception ex)
+            {
+                await Awaitable.MainThreadAsync();
+
+                ESerializationOperationResult result = exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure;
+                
+                return (default, result);
+            }
         }
 
-        public List<DataT> DeserializeDataFromDirectory<DataT>(string folderPath)
+        public override (List<DataT> data, ESerializationOperationResult result) DeserializeDataFromDirectory<DataT>(string folderPath)
         {
             List<DataT> dataList = new List<DataT>();
 
-            if (Directory.Exists(folderPath))
+            try
             {
+                if (!Directory.Exists(folderPath))
+                    return (dataList, ESerializationOperationResult.Failure | ESerializationOperationResult.DirectoryNotFound);
+
                 IEnumerable<string> files = Directory.EnumerateFiles(folderPath, FilePattern);
 
                 foreach (string file in files)
                 {
                     string json = File.ReadAllText(file);
                     DataT data = JsonUtility.FromJson<DataT>(json);
-
                     dataList.Add(data);
                 }
-            }
 
-            return dataList;
+                return (dataList, ESerializationOperationResult.Success);
+            }
+            catch (Exception ex)
+            {
+                ESerializationOperationResult result = exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure;
+                
+                return (dataList, result);
+            }
         }
 
-        public async Awaitable<List<DataT>> DeserializeDataFromDirectoryAsync<DataT>(string folderPath)
+        public override async Awaitable<(List<DataT> data, ESerializationOperationResult result)> DeserializeDataFromDirectoryAsync<DataT>(string folderPath)
         {
             List<DataT> dataList = new List<DataT>();
 
-            if (Directory.Exists(folderPath))
+            try
             {
+                if (!Directory.Exists(folderPath))
+                    return (dataList, ESerializationOperationResult.Failure | ESerializationOperationResult.DirectoryNotFound);
+
                 string[] files = Directory.GetFiles(folderPath, FilePattern);
                 List<string> jsons = new List<string>(files.Length);
 
@@ -108,22 +178,24 @@ namespace MA.Serialization
 
                 await Awaitable.MainThreadAsync();
 
-                foreach (string json in jsons) 
+                foreach (string json in jsons)
                 {
                     DataT data = JsonUtility.FromJson<DataT>(json);
                     dataList.Add(data);
                 }
+
+                return (dataList, ESerializationOperationResult.Success);
             }
+            catch (Exception ex)
+            {
+                await Awaitable.MainThreadAsync();
 
-            return dataList;
+                ESerializationOperationResult result = exceptionHandler != null ? exceptionHandler.HandleException(ex) : ESerializationOperationResult.Failure;
+                
+                return (dataList, result);
+            }
         }
 
-        private string CombineFilePath(string folderPath, string fileName)
-        {
-            string fileNameWithExtension = string.Concat(fileName, FileExtension);
-            string fullPath = Path.Combine(folderPath, fileNameWithExtension);
-
-            return fullPath;
-        }
+        private string CombineFilePath(string folderPath, string fileName) => Path.Combine(folderPath, string.Concat(fileName, FileExtension));
     }
 }

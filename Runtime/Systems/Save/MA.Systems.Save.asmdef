@@ -1,0 +1,16 @@
+{
+    "name": "MA.Systems.Save",
+    "rootNamespace": "MA.Systems.Save",
+    "references": [
+        "GUID:41dd9da97687554468285c37d004d095"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
