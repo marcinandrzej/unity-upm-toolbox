@@ -1,0 +1,16 @@
+{
+    "name": "MA.Systems.Scenes.Samples",
+    "rootNamespace": "MA.Systems.Scenes.Samples",
+    "references": [
+        "GUID:4aac9582849b2c84cb5d596ef6bec3ed"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

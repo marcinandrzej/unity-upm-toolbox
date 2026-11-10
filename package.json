@@ -1,12 +1,19 @@
 {
 	"name": "com.marcinandrzejewski.toolbox",
 	"displayName": "Toolbox",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"unity": "6000.7",
 	"unityRelease": "0a4",
 	"description": "A versatile collection of essential development tools, design patterns, and robust systems designed to streamline game architecture and accelerate workflow across projects.",
 	"author": {
 		"name": "Marcin Andrzejewski"
 	},
+	"samples": [
+		{
+			"displayName": "Scene Management Demo",
+			"description": "SceneManager sample implementation.",
+			"path": "Samples~/SceneSystemSample"
+		}
+	],
 	"hideInEditor": false
 }
