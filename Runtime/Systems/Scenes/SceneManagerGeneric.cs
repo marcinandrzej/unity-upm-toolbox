@@ -3,65 +3,39 @@ using UnityEngine;
 
 namespace MA.Systems.Scenes
 {
-    public abstract class SceneManagerGeneric<SceneKeyT, SceneDataT, LevelKeyT, LevelDataT> : MonoBehaviour, ISceneManagerGeneric<SceneKeyT, SceneDataT, LevelKeyT, LevelDataT>
+    public abstract class SceneManagerGeneric<SceneKeyT, SceneDataT, SceneLoaderT> : MonoBehaviour, ISceneManagerGeneric<SceneKeyT, SceneDataT> where SceneLoaderT : ISceneLoaderGeneric<SceneDataT>, new()
     {
-        [SerializeField] protected AssetMapGeneric<SceneKeyT, SceneDataT> keyToSceneMap;
-        [SerializeField] protected AssetMapGeneric<LevelKeyT, LevelDataT> keyToLevelMap;
+        [SerializeField] private AssetMapGeneric<SceneKeyT, SceneDataT> keyToDataMap;
+        [SerializeField] private SceneLoaderT sceneLoader = new();
 
-        public abstract HashSet<SceneDataT> ActiveScenes { get; }
+        public IReadOnlyCollection<SceneDataT> ActiveSceneDataCollection => sceneLoader.ActiveScenes;
 
-        public abstract HashSet<LevelDataT> ActiveLevels { get; }
+        private void OnDestroy() => sceneLoader?.Dispose();
 
-        public async Awaitable<ESceneOperationResult> LoadSceneAsync(SceneKeyT key) 
+        public async Awaitable<ESceneOperationResult> LoadAsync(SceneKeyT key) 
         {
-            if (keyToSceneMap == null)
+            if (keyToDataMap == null)
                 return ESceneOperationResult.Failure | ESceneOperationResult.MapNotAssigned;
 
-            if (!keyToSceneMap.TryGetAsset(key, out SceneDataT data))
+            if (!keyToDataMap.TryGetAsset(key, out SceneDataT data))
                 return ESceneOperationResult.Failure | ESceneOperationResult.KeyNotFound;
 
-            return await LoadSceneAsync(data);
+            return await LoadAsync(data);
         }
 
-        public abstract Awaitable<ESceneOperationResult> LoadSceneAsync(SceneDataT loadableData);
+        public Awaitable<ESceneOperationResult> LoadAsync(SceneDataT data) => sceneLoader.LoadAsync(data);
 
-        public async Awaitable<ESceneOperationResult> UnloadSceneAsync(SceneKeyT key) 
+        public async Awaitable<ESceneOperationResult> UnloadAsync(SceneKeyT key) 
         {
-            if (keyToSceneMap == null)
+            if (keyToDataMap == null)
                 return ESceneOperationResult.Failure | ESceneOperationResult.MapNotAssigned;
 
-            if (!keyToSceneMap.TryGetAsset(key, out SceneDataT data))
+            if (!keyToDataMap.TryGetAsset(key, out SceneDataT data))
                 return ESceneOperationResult.Failure | ESceneOperationResult.KeyNotFound;
 
-            return await UnloadSceneAsync(data);
+            return await UnloadAsync(data);
         }
-
-        public abstract Awaitable<ESceneOperationResult> UnloadSceneAsync(SceneDataT loadableData);
-
-        public async Awaitable<ESceneOperationResult> LoadLevelAsync(LevelKeyT key) 
-        {
-            if (keyToLevelMap == null)
-                return ESceneOperationResult.Failure | ESceneOperationResult.MapNotAssigned;
-
-            if (!keyToLevelMap.TryGetAsset(key, out LevelDataT data))
-                return ESceneOperationResult.Failure | ESceneOperationResult.KeyNotFound;
-
-            return await LoadLevelAsync(data);
-        }
-
-        public abstract Awaitable<ESceneOperationResult> LoadLevelAsync(LevelDataT loadableData);
-
-        public async Awaitable<ESceneOperationResult> UnloadLevelAsync(LevelKeyT key)
-        {
-            if (keyToLevelMap == null)
-                return ESceneOperationResult.Failure | ESceneOperationResult.MapNotAssigned;
-
-            if (!keyToLevelMap.TryGetAsset(key, out LevelDataT data))
-                return ESceneOperationResult.Failure | ESceneOperationResult.KeyNotFound;
-
-            return await UnloadLevelAsync(data);
-        }
-
-        public abstract Awaitable<ESceneOperationResult> UnloadLevelAsync(LevelDataT loadableData);
+        
+        public  Awaitable<ESceneOperationResult> UnloadAsync(SceneDataT data) => sceneLoader.UnloadAsync(data);
     }
 }

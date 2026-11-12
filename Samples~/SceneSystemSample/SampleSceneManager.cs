@@ -1,103 +1,25 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 namespace MA.Systems.Scenes.Samples
 {
-    public class SampleSceneManager : SceneManagerGeneric<ESampleSceneKey, SampleSceneData, ESampleSceneKey, SampleSceneData>
+    public class SampleSceneManager : SceneManagerGeneric<ESampleSceneKey, SampleSceneData, BuildInSceneLoaderGeneric<SampleSceneData>>
     {
-        private readonly HashSet<SampleSceneData> activeScenes = new();
-        private readonly HashSet<SampleSceneData> activeLevels = new();
+#if UNITY_EDITOR
+        [Header("DEBUG")]
+        public ESampleSceneKey debugSceneKey;
+        public SampleSceneData debugSceneData;
 
-        public override HashSet<SampleSceneData> ActiveScenes => activeScenes;
-        public override HashSet<SampleSceneData> ActiveLevels => activeLevels;
+        [ContextMenu("DebugUnloadSceneByKey")]
+        public void DebugUnloadSceneByKey() => _ = UnloadAsync(debugSceneKey);
 
-        public override async Awaitable<ESceneOperationResult> LoadSceneAsync(SampleSceneData loadableData)
-        {
-            if (loadableData == null || string.IsNullOrEmpty(loadableData.SceneName))
-                return ESceneOperationResult.Failure | ESceneOperationResult.InvalidSceneData;
+        [ContextMenu("DebugLoadSceneByKey")]
+        public void DebugLoadSceneByKey() => _ = LoadAsync(debugSceneKey);
 
-            if (activeScenes.Contains(loadableData))
-                return ESceneOperationResult.Failure | ESceneOperationResult.SceneAlreadyLoaded;
+        [ContextMenu("DebugUnloadSceneByData")]
+        public void DebugUnloadSceneByData() => _ = UnloadAsync(debugSceneData);
 
-            try
-            {
-                await SceneManager.LoadSceneAsync(loadableData.SceneName, LoadSceneMode.Additive);
-
-                activeScenes.Add(loadableData);
-
-                return ESceneOperationResult.Success;
-            }
-            catch
-            {
-                return ESceneOperationResult.Failure | ESceneOperationResult.Unknown;
-            }
-        }
-
-        public override async Awaitable<ESceneOperationResult> UnloadSceneAsync(SampleSceneData loadableData)
-        {
-            if (loadableData == null || string.IsNullOrEmpty(loadableData.SceneName))
-                return ESceneOperationResult.Failure | ESceneOperationResult.InvalidSceneData;
-
-            if (!activeScenes.Contains(loadableData))
-                return ESceneOperationResult.Failure | ESceneOperationResult.SceneNotLoaded;
-
-            try
-            {
-                await SceneManager.UnloadSceneAsync(loadableData.SceneName);
-
-                activeScenes.Remove(loadableData);
-
-                return ESceneOperationResult.Success;
-            }
-            catch
-            {
-                return ESceneOperationResult.Failure | ESceneOperationResult.Unknown;
-            }
-        }
-
-        public override async Awaitable<ESceneOperationResult> LoadLevelAsync(SampleSceneData loadableData)
-        {
-            if (loadableData == null || string.IsNullOrEmpty(loadableData.SceneName))
-                return ESceneOperationResult.Failure | ESceneOperationResult.InvalidSceneData;
-
-            if (activeLevels.Contains(loadableData))
-                return ESceneOperationResult.Failure | ESceneOperationResult.SceneAlreadyLoaded;
-
-            try
-            {
-                await SceneManager.LoadSceneAsync(loadableData.SceneName, LoadSceneMode.Additive);
-
-                activeLevels.Add(loadableData);
-
-                return ESceneOperationResult.Success;
-            }
-            catch
-            {
-                return ESceneOperationResult.Failure | ESceneOperationResult.Unknown;
-            }
-        }
-
-        public override async Awaitable<ESceneOperationResult> UnloadLevelAsync(SampleSceneData loadableData)
-        {
-            if (loadableData == null || string.IsNullOrEmpty(loadableData.SceneName))
-                return ESceneOperationResult.Failure | ESceneOperationResult.InvalidSceneData;
-
-            if (!activeLevels.Contains(loadableData))
-                return ESceneOperationResult.Failure | ESceneOperationResult.SceneNotLoaded;
-
-            try
-            {
-                await SceneManager.UnloadSceneAsync(loadableData.SceneName);
-
-                activeLevels.Remove(loadableData);
-
-                return ESceneOperationResult.Success;
-            }
-            catch
-            {
-                return ESceneOperationResult.Failure | ESceneOperationResult.Unknown;
-            }
-        }
+        [ContextMenu("DebugLoadSceneByData")]
+        public void DebugLoadSceneByData() => _ = LoadAsync(debugSceneData);
+#endif
     }
 }

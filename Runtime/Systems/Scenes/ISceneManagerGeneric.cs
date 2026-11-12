@@ -3,26 +3,17 @@ using UnityEngine;
 
 namespace MA.Systems.Scenes
 {
-    public interface ISceneManagerGeneric<SceneKeyT, SceneDataT, LevelKeyT, LevelDataT>
+    public interface ISceneManagerGeneric<SceneKeyT, SceneDataT>
     {
-        public HashSet<SceneDataT> ActiveScenes { get; }
+        public IReadOnlyCollection<SceneDataT> ActiveSceneDataCollection { get; }
 
-        public HashSet<LevelDataT> ActiveLevels { get; }
+        public Awaitable<ESceneOperationResult> LoadAsync(SceneKeyT key);
 
-        public Awaitable<ESceneOperationResult> LoadSceneAsync(SceneKeyT key);
+        public Awaitable<ESceneOperationResult> LoadAsync(SceneDataT data);
 
-        public Awaitable<ESceneOperationResult> LoadSceneAsync(SceneDataT loadableData);
+        public Awaitable<ESceneOperationResult> UnloadAsync(SceneKeyT key);
 
-        public Awaitable<ESceneOperationResult> UnloadSceneAsync(SceneKeyT key);
+        public Awaitable<ESceneOperationResult> UnloadAsync(SceneDataT data);
 
-        public Awaitable<ESceneOperationResult> UnloadSceneAsync(SceneDataT loadableData);
-
-        public Awaitable<ESceneOperationResult> LoadLevelAsync(LevelKeyT key);
-
-        public Awaitable<ESceneOperationResult> LoadLevelAsync(LevelDataT loadableData);
-
-        public Awaitable<ESceneOperationResult> UnloadLevelAsync(LevelKeyT key);
-
-        public Awaitable<ESceneOperationResult> UnloadLevelAsync(LevelDataT loadableData);
     }
 }

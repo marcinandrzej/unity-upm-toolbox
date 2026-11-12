@@ -3,8 +3,6 @@
     public enum ESampleSceneKey
     {
         MainMenu,
-        GameplayHub,
-        Level01,
-        Level02
+        GameplayHub
     }
 }
