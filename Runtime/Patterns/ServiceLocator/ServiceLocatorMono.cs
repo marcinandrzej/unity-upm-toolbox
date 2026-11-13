@@ -1,10 +1,10 @@
-﻿using MA.Patterns.SingletonSpace;
+﻿using MA.Patterns.Singleton;
 using System;
 using System.Collections.Generic;
 
-namespace MA.Patterns.ServiceLocatorSpace
+namespace MA.Patterns.ServiceLocator
 {
-    public class ServiceLocator : SingletonMonoGeneric<IServiceLocator, ServiceLocator>, IServiceLocator
+    public class ServiceLocatorMono : SingletonMonoGeneric<IServiceLocator, ServiceLocatorMono>, IServiceLocator
     {
         private Dictionary<Type, object> _typeToServiceDict = new Dictionary<Type, object>();
 

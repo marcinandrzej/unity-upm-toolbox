@@ -1,0 +1,16 @@
+{
+    "name": "MA.Patterns.State.Samples",
+    "rootNamespace": "MA.Patterns.State.Samples",
+    "references": [
+        "GUID:8fc68bd5e7822934284493f34394dba1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

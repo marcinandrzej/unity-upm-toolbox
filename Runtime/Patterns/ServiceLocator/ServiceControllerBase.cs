@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MA.Patterns.ServiceLocatorSpace
+namespace MA.Patterns.ServiceLocator
 {
     public abstract class ServiceControllerBase : MonoBehaviour
     {

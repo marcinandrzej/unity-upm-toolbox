@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MA.Patterns.SingletonSpace
+namespace MA.Patterns.Singleton
 {
     public abstract class SingletonMonoGeneric<SingletonInterfaceT, SingletonClassT> : MonoBehaviour 
         where SingletonClassT : MonoBehaviour, SingletonInterfaceT

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MA.Patterns.ServiceLocatorSpace
+namespace MA.Patterns.ServiceLocator
 {
     [Flags]
     public enum EServiceOperationResult

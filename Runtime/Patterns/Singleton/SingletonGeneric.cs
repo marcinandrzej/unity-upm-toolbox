@@ -1,6 +1,6 @@
 using System;
 
-namespace MA.Patterns.SingletonSpace
+namespace MA.Patterns.Singleton
 {
     public abstract class SingletonGeneric<SingletonInterfaceT, SingletonClassT>
         where SingletonClassT : class, SingletonInterfaceT

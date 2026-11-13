@@ -1,4 +1,4 @@
-namespace MA.Patterns.ServiceLocatorSpace
+namespace MA.Patterns.ServiceLocator
 {
     public interface IServiceLocator
     {
