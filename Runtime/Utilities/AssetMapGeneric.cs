@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace MA.Systems.Scenes
+namespace MA.Utilities
 {
     public abstract class AssetMapGeneric<KeyT, AssetT> : ScriptableObject
     {

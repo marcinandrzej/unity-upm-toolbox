@@ -1,3 +1,4 @@
+using MA.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,14 +10,13 @@ namespace MA.Systems.Input
     {
         [SerializeField] private PlayerInput playerInput;
         [SerializeField] private InputContextT defaultContext;
+        [SerializeField] private AssetMapGeneric<InputContextT, InputContextData> keyToDataMap;
 
         private InputContextT _activeContext;
         private Dictionary<InputContextT, HashSet<object>> _registeredInputRequestDict = new Dictionary<InputContextT, HashSet<object>>();
 
         public PlayerInput PlayerInput => playerInput;
         public InputContextT ActiveContext => _activeContext;
-
-        protected abstract Dictionary<InputContextT, InputContextData> ContextDataDict { get; }
 
         public void RegisterInputContext(InputContextT context, object source)
         {
@@ -64,13 +64,13 @@ namespace MA.Systems.Input
 
         private void ApplyContext(InputContextT context)
         {
-            if (ContextDataDict.TryGetValue(context, out InputContextData data))
+            if (keyToDataMap.TryGetAsset(context, out InputContextData data))
             {
                 _activeContext = context;
                 playerInput.SwitchCurrentActionMap(data.actionMapNameOrId);
             }
             else
-                Debug.LogError($"Context: [{context}] does not have defined InputActionMapNameOrId. Active context has not changed.");
+                Debug.LogError($"Context: [{context}] is not defined. Active context has not changed.");
         }
 
         private void ValidateContextRequests()
@@ -93,7 +93,7 @@ namespace MA.Systems.Input
                 if (pair.Value == null || pair.Value.Count == 0)
                     continue;
 
-                if (!ContextDataDict.TryGetValue(pair.Key, out InputContextData data))
+                if (!keyToDataMap.TryGetAsset(pair.Key, out InputContextData data))
                     continue;
 
                 if (!foundValidContext || data.priority > highestPriority)

@@ -2,7 +2,8 @@
     "name": "MA.Systems.Input",
     "rootNamespace": "MA.Systems.Input",
     "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:43ea947d083ed724fbab69fd42f7e6d0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

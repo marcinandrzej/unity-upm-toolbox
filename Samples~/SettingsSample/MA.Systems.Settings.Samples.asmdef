@@ -1,0 +1,17 @@
+{
+    "name": "MA.Systems.Settings.Samples",
+    "rootNamespace": "MA.Systems.Settings.Samples",
+    "references": [
+        "GUID:af853a554672bc14bae32f30b9065233",
+        "GUID:41dd9da97687554468285c37d004d095"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

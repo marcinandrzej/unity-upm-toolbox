@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using MA.Utilities;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace MA.Systems.Scenes.Samples

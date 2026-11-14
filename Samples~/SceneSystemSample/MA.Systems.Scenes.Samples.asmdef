@@ -2,7 +2,8 @@
     "name": "MA.Systems.Scenes.Samples",
     "rootNamespace": "MA.Systems.Scenes.Samples",
     "references": [
-        "GUID:4aac9582849b2c84cb5d596ef6bec3ed"
+        "GUID:4aac9582849b2c84cb5d596ef6bec3ed",
+        "GUID:43ea947d083ed724fbab69fd42f7e6d0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -6,13 +6,21 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-11-14
+### Added
+- [Utilities] Create utilities assembly.
+### Changed
+- [Scenes system | Utilities] Moved AssetMapGeneric from Scenes to Utilities.
+- [Input system | Utilities] Used AssetMapGeneric instead of simple dict in InputManagerGeneric.
+- [Settings system] Introduced settings submanagers. Samples added.
+
 ## [1.7.0] - 2026-11-13
 ### Added
 - [Patterns] State pattern.
 - [Patterns] Factory pattern.
 
 ## [1.6.0] - 2026-11-12
-### Update
+### Changed
 - [Scenes system] Scenes system refactor. 
 ### Added
 - [Scenes system] Build in and addressable based loaders added.

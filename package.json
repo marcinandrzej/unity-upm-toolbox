@@ -1,7 +1,7 @@
 {
 	"name": "com.marcinandrzejewski.toolbox",
 	"displayName": "Toolbox",
-	"version": "1.7.0",
+	"version": "1.8.0",
 	"unity": "6000.7",
 	"unityRelease": "0a4",
 	"description": "A versatile collection of essential development tools, design patterns, and robust systems designed to streamline game architecture and accelerate workflow across projects.",
@@ -18,6 +18,11 @@
 			"displayName": "State Machine Demo",
 			"description": "State Machine sample implementation.",
 			"path": "Samples~/StateMachineSample"
+		},
+		{
+			"displayName": "Settings Demo",
+			"description": "Settings sample implementation.",
+			"path": "Samples~/SettingsSample"
 		}
 	],
 	"hideInEditor": false

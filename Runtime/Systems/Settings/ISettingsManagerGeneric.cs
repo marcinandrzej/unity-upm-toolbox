@@ -5,9 +5,11 @@ namespace MA.Systems.Settings
 {
     public interface ISettingsManagerGeneric<SettingsDataT>
     {
-        public SettingsDataT Settings { get; }
+        public void Initialize();
 
-        public void SetDefaultSettings();
+        public void Apply();
+
+        public bool TryGetSubmanager<SubmanagerT>(out SubmanagerT submanager) where SubmanagerT : SettingsSubmanagerGenericBase<SettingsDataT>;
 
         public ESerializationOperationResult LoadSettings();
 
