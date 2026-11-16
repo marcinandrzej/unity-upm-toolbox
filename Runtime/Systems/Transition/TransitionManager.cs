@@ -1,31 +1,46 @@
-using System.Collections;
+using System;
 using UnityEngine;
 
 namespace MA.Systems.Transition
 {
     public class TransitionManager : MonoBehaviour, ITransitionManager
     {
-        private Coroutine _currentTransition = null;
+        public bool IsInTransition { get; private set; } = false;
 
-        public bool IsInTransition => _currentTransition != null;
-
-        public void ExecuteStateTransition(ITransition transition)
+        public async Awaitable ExecuteStateTransition(ITransition transition)
         {
             if (IsInTransition)
             {
-                Debug.LogError("TransitionManager is already in transition");
+                Debug.LogError("TransitionManager is already in transition.", this);
 
                 return;
             }
 
-            _currentTransition = StartCoroutine(ExecuteStateTransitionCoroutine(transition));
-        }
+            if (transition == null)
+            {
+                Debug.LogError("Transition cannot be null.", this);
 
-        private IEnumerator ExecuteStateTransitionCoroutine(ITransition transition)
-        {
-            yield return transition.Execute();
+                return;
+            }
 
-            _currentTransition = null;
+            IsInTransition = true;
+
+            try
+            {
+                await transition.Execute(destroyCancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Expected when TransitionManager is destroyed or Play Mode exits
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex, this);
+            }
+            finally
+            {
+                IsInTransition = false;
+            }
         }
     }
 }

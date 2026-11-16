@@ -23,7 +23,7 @@ namespace MA.Systems.Transition
         {
             ITransitionManager manager = transitionManagerObject as ITransitionManager;
             ITransition transition = transitionObject as ITransition;
-            manager.ExecuteStateTransition(transition);
+            _ = manager.ExecuteStateTransition(transition);
             Destroy(gameObject);
         }
     }

@@ -1,9 +1,10 @@
-using System.Collections;
+using System.Threading;
+using UnityEngine;
 
 namespace MA.Systems.Transition
 {
     public interface ITransition
     {
-        public IEnumerator Execute();
+        public Awaitable Execute(CancellationToken ct = default);
     }
 }
